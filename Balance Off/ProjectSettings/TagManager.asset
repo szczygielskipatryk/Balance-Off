@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ground
   - menu-Buttons
+  - obsticle
   layers:
   - Default
   - TransparentFX

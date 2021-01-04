@@ -9,7 +9,6 @@ public class PlayerControler : MonoBehaviour
     public float ForwardSpeed;
     private int _line = 1; //0-lewa linia, 1 linia środkowa, 2- prawa linia
     private readonly float _line_distance = 3; // dystans między dwoma liniami
-    public bool IsAlive = true;
     private float jump = 10;
     private float gravforce = -20;
 
@@ -38,17 +37,17 @@ public class PlayerControler : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             _line++;
-            if (_line == 3)
+            if (_line >= 3)
             {
-                IsAlive = false;
+                PlayerManager.IsAlive = false;
             }
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             _line--;
-            if (_line == -1)
+            if (_line <= -1)
             {
-                IsAlive = false;
+                PlayerManager.IsAlive = false;
             }
         }
         //liczenie położenia
@@ -61,8 +60,15 @@ public class PlayerControler : MonoBehaviour
         {
             newPosition += Vector3.right * _line_distance;
         }
-
-        transform.position = Vector3.Lerp(transform.position,newPosition,120*Time.fixedDeltaTime);
+        //naprawa poruszania się, brak kolizji z pachołkami drogowymi
+        if (transform.position == newPosition)
+            return;
+        Vector3 difference = newPosition - transform.position;
+        Vector3 movDirection = difference.normalized * 25 * Time.deltaTime;
+        if (movDirection.sqrMagnitude < difference.sqrMagnitude)
+            _controller.Move(movDirection);
+        else
+            _controller.Move(difference);
     }
 
     private void FixedUpdate()
@@ -74,4 +80,13 @@ public class PlayerControler : MonoBehaviour
     {
         dir.y = jump;
     }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.transform.tag == "obsticle")
+        {
+            PlayerManager.IsAlive = false;
+        }
+    }
+
 }
