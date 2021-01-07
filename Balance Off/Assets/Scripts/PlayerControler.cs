@@ -7,7 +7,6 @@ public class PlayerControler : MonoBehaviour
 {
     private CharacterController _controller;
     private Vector3 dir;
-    public static float ForwardSpeed=30;
     private int _line = 1; //0-lewa linia, 1 linia środkowa, 2- prawa linia
     private readonly float _line_distance = 3; // dystans między dwoma liniami
     private float jump = 10;
@@ -16,7 +15,7 @@ public class PlayerControler : MonoBehaviour
     private void Start()
     {
         _controller = GetComponent<CharacterController>();
-        dir.z = ForwardSpeed;
+        dir.z = 20;
     }
 
     private void Update()
@@ -70,6 +69,10 @@ public class PlayerControler : MonoBehaviour
             _controller.Move(movDirection);
         else
             _controller.Move(difference);
+        if ((int)ScoreManager.Score % 50 == 0)
+        {
+            dir.z += 5;
+        }
     }
 
     private void FixedUpdate()
