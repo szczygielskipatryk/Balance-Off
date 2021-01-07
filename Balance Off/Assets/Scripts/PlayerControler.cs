@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PlayerControler : MonoBehaviour
 {
     private CharacterController _controller;
     private Vector3 dir;
-    public float ForwardSpeed;
+    public static float ForwardSpeed=30;
     private int _line = 1; //0-lewa linia, 1 linia środkowa, 2- prawa linia
     private readonly float _line_distance = 3; // dystans między dwoma liniami
     private float jump = 10;
@@ -20,10 +21,10 @@ public class PlayerControler : MonoBehaviour
 
     private void Update()
     {
-        
+
         if (_controller.isGrounded)
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (SwipeManager.up||Input.GetKeyDown(KeyCode.UpArrow))
             {
                 Jump();
             }
@@ -32,9 +33,9 @@ public class PlayerControler : MonoBehaviour
         {
             dir.y += gravforce * Time.deltaTime;
         }
-        
+
         //zmiana linii (narazie za pomocą strzałek, późniejsza implementacja akcelerometry i gestów)
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (SwipeManager.right||Input.GetKeyDown(KeyCode.RightArrow))
         {
             _line++;
             if (_line >= 3)
@@ -42,7 +43,7 @@ public class PlayerControler : MonoBehaviour
                 PlayerManager.IsAlive = false;
             }
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (SwipeManager.left||Input.GetKeyDown(KeyCode.LeftArrow))
         {
             _line--;
             if (_line <= -1)
@@ -88,5 +89,7 @@ public class PlayerControler : MonoBehaviour
             PlayerManager.IsAlive = false;
         }
     }
+
+
 
 }
