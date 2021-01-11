@@ -4,49 +4,61 @@ using UnityEngine;
 
 public class SwipeManager : MonoBehaviour
 {
-    public static bool tap, left, right, up;
-    private Vector3 lt, ft;
+    public static bool tap, left, right, up, isDraging;
+    private Vector2 lt, ft;
     private void Update()
     {
         tap= left= right= up = false;
-        if (Input.touchCount == 1)
+        if (Input.touches.Length > 0)
         {
-            Touch touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
+            if (Input.touches[0].phase == TouchPhase.Began)
             {
-                ft = touch.position;
-                lt = touch.position;
+                tap = true;
+                isDraging = true;
+                ft = Input.touches[0].position;
             }
-            else if (touch.phase == TouchPhase.Moved)
+            else if (Input.touches[0].phase == TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled)
             {
-                lt = touch.position;
+                isDraging = false;
+                Reset();
             }
-            else if (touch.phase == TouchPhase.Ended)
-            {
-                lt = touch.position;
-                if (Mathf.Abs(lt.x - ft.x) > Mathf.Abs(lt.y - ft.y))
-                {
-                    if (lt.x > ft.x)
-                    {
-                        //Swipetype 1=right, 2=left, 3=up/tap
-                        right = true;
-                    }
-                    else
-                    {
-                        left = true;
-                    }
-                }
+        }
+        lt = Vector2.zero;
+        if (isDraging)
+        {
+            if (Input.touches.Length < 0)
+                lt = Input.touches[0].position - ft;
+            else if (Input.GetMouseButton(0))
+                lt = (Vector2)Input.mousePosition - ft;
+        }
 
-                else if (lt.y > ft.y)
-                {
-                    up = true;
-                }
+        if (lt.magnitude > 100)
+        {
+            float x = lt.x;
+            float y = lt.y;
+            if (Mathf.Abs(x) > Mathf.Abs(y))
+            {
+                if (x < 0)
+                    left = true;
+                else
+                    right = true;
             }
-            else
+            else if (y > 0)
+
             {
                 up = true;
+
             }
+
+            Reset();
         }
 
     }
+
+    private void Reset()
+    {
+        lt = ft = Vector2.zero;
+        isDraging = false;
+    }
 }
+

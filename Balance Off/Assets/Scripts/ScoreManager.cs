@@ -5,21 +5,29 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    public Text scoreText;
+    public Text scoreText,highScoreText;
     public Transform player;
     [SerializeField] public static float Score;
+    [SerializeField] public float HighScore;
     [SerializeField] private Vector3 _lastPos;
     void Start()
     {
         _lastPos = player.position;
-        Score = 1;
+        Score = 0;
+        HighScore = PlayerPrefs.GetInt("HighScore");
     }
 
     
     void Update()
     {
-        Score += Mathf.Round(player.position.z - _lastPos.z);
-        _lastPos = player.position;
+        Score = Mathf.Round(Vector3.Distance(_lastPos, player.position));
         scoreText.text = "Score: " + Score;
+        highScoreText.text = "High Score: " + HighScore;
+        if (Score > HighScore)
+        {
+            HighScore = Score;
+        }
+        PlayerPrefs.SetInt("HighScore", (int)HighScore);
+        PlayerPrefs.Save();
     }
 }
