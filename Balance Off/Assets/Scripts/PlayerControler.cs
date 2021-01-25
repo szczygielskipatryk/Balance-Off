@@ -13,16 +13,21 @@ public class PlayerControler : MonoBehaviour
     private float jump = 10;
     private float gravforce = -20;
     public float forSpeed, maxSpeed;
+    private int isChecked;
+    private Vector3 inputacc;
 
     void Start()
     {
         _controller = GetComponent<CharacterController>();
         dir.z = forSpeed;
+        isChecked = PlayerPrefs.GetInt("isChecked");
         
+
     }
 
     void Update()
     {
+        inputacc = Input.acceleration;
         if (forSpeed < maxSpeed)
         {
             forSpeed += 0.4f * Time.deltaTime;
@@ -30,34 +35,67 @@ public class PlayerControler : MonoBehaviour
 
         dir.z = forSpeed;
 
-        if (_controller.isGrounded)
-        {
-            if (SwipeManager.up || Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                Jump();
-            }
-        }
-        else
-        {
-            dir.y += gravforce * Time.deltaTime;
-        }
+
 
         //zmiana linii (narazie za pomocą strzałek, późniejsza implementacja akcelerometru i gestów)
-        if (SwipeManager.right || Input.GetKeyDown(KeyCode.RightArrow))
+        if (isChecked == 0)
         {
-            _line++;
-            if (_line >= 3)
+            if (_controller.isGrounded)
             {
-                PlayerManager.IsAlive = false;
+                if (SwipeManager.up || Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    Jump();
+                }
+            }
+            else
+            {
+                dir.y += gravforce * Time.deltaTime;
+            }
+
+            if (SwipeManager.right || Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                _line++;
+                if (_line >= 3)
+                {
+                    _line = 2;
+                }
+            }
+            if (SwipeManager.left || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                _line--;
+                if (_line <= -1)
+                {
+                    _line = 0;
+                }
             }
         }
-
-        if (SwipeManager.left || Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (isChecked == 1)
         {
-            _line--;
-            if (_line <= -1)
+            if (_controller.isGrounded)
             {
-                PlayerManager.IsAlive = false;
+                if (SwipeManager.tap)
+                {
+                    Jump();
+                }
+            }
+            else
+            {
+                dir.y += gravforce * Time.deltaTime;
+            }
+
+            if (AccelerometerManager.left)
+            {
+                _line = 0;
+            }
+
+            if (AccelerometerManager.center)
+            {
+                _line = 1;
+            }
+
+            if (AccelerometerManager.right)
+            {
+                _line = 2;
             }
         }
 
@@ -81,12 +119,14 @@ public class PlayerControler : MonoBehaviour
             _controller.Move(movDirection);
         else
             _controller.Move(difference);
+        
 
     }
 
     void FixedUpdate() { 
 
     _controller.Move(dir * Time.deltaTime);
+    Debug.Log(inputacc.x.ToString());
     }
 
     private void Jump()
