@@ -7,7 +7,6 @@ using UnityEngine.Audio;
 
 public class SettingsEvents : MonoBehaviour
 {
-    public AudioMixer audioMixer;
     public static bool chooseControl;
     public Slider slider;
     public Toggle toggle;
@@ -30,6 +29,11 @@ public class SettingsEvents : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
+    public void about()
+    {
+        SceneManager.LoadScene("About");
+    }
+
     public void setVolume(float volume)
     {
         PlayerPrefs.SetFloat("VolumeMain",volume);
@@ -38,14 +42,8 @@ public class SettingsEvents : MonoBehaviour
 
     public void control(bool isChecked)
     {
-        if (PlayerPrefs.GetInt("isChecked") == 0)
-        {
-            PlayerPrefs.SetInt("isChecked", 1);
-        }
-        else if (PlayerPrefs.GetInt("isChecked") == 1)
-        {
-            PlayerPrefs.SetInt("isChecked", 0);
-        }
+        PlayerPrefs.SetInt("isChecked", isChecked ? 1 : 0);
+        PlayerPrefs.Save();
     }
 
     public void reset()

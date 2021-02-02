@@ -8,7 +8,7 @@ public class ScoreManager : MonoBehaviour
     public Text scoreText,highScoreText;
     public Transform player;
     [SerializeField] public static float Score;
-    [SerializeField] public float HighScore;
+    [SerializeField] private float HighScore;
     [SerializeField] private Vector3 _lastPos;
     void Start()
     {

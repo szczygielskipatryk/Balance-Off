@@ -27,7 +27,6 @@ public class PlayerControler : MonoBehaviour
 
     void Update()
     {
-        inputacc = Input.acceleration;
         if (forSpeed < maxSpeed)
         {
             forSpeed += 0.4f * Time.deltaTime;
@@ -126,7 +125,6 @@ public class PlayerControler : MonoBehaviour
     void FixedUpdate() { 
 
     _controller.Move(dir * Time.deltaTime);
-    Debug.Log(inputacc.x.ToString());
     }
 
     private void Jump()
@@ -141,7 +139,4 @@ public class PlayerControler : MonoBehaviour
             PlayerManager.IsAlive = false;
         }
     }
-
-
-
 }

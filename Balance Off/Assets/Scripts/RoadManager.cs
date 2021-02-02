@@ -8,7 +8,7 @@ public class RoadManager : MonoBehaviour
 
     private float _zPosition = 0;
     private readonly float _roadLenght = 30;
-    private int activeRoads = 10;
+    public int activeRoads = 11;
     public Transform PlayerTransform;
     private List<GameObject>activeRoad= new List<GameObject>();
     void Start()
